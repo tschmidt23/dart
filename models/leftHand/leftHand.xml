@@ -1,0 +1,170 @@
+<?xml version="1.0" ?>
+<model version="1">
+    <param name="indexLength1" value="0.0375" />
+    <param name="indexLength2" value="0.0265" />
+    <param name="indexLength3" value="0.014" />
+    <param name="indexRadius1" value="0.01" />
+    <param name="indexRadius2" value="0.009" />
+    <param name="indexRadius3" value="0.008" />
+    <param name="middleLength1" value="0.045" />
+    <param name="middleLength2" value="0.03" />
+    <param name="middleLength3" value="0.0164515" />
+    <param name="middleRadius1" value="0.01" />
+    <param name="middleRadius2" value="0.009" />
+    <param name="middleRadius3" value="0.008" />
+    <param name="palmScale" value="1" />
+    <param name="pinkyLength1" value="0.025" />
+    <param name="pinkyLength2" value="0.021" />
+    <param name="pinkyLength3" value="0.021" />
+    <param name="pinkyRadius1" value="0.01" />
+    <param name="pinkyRadius2" value="0.009" />
+    <param name="pinkyRadius3" value="0.008" />
+    <param name="ringLength1" value="0.0432693" />
+    <param name="ringLength2" value="0.027041" />
+    <param name="ringLength3" value="0.0157243" />
+    <param name="ringRadius1" value="0.01" />
+    <param name="ringRadius2" value="0.009" />
+    <param name="ringRadius3" value="0.008" />
+    <param name="thumbLength1" value="0.037" />
+    <param name="thumbLength2" value="0.03" />
+    <param name="thumbLength3" value="0.027" />
+    <param name="thumbRadius1" value="0.014" />
+    <param name="thumbRadius2" value="0.01" />
+    <param name="thumbRadius3" value="0.009" />
+    <geom type="mesh" sx="0.0145" sy="0.016" sz="0.0145" tx="0.011955" ty="0.0326298" tz="-0.00458485" rx="1.5708" ry="-4.47035e-07" rz="1.5708" red="83" green="147" blue="186" meshFile="palm.obj" />
+    <frame jointName="Index A/A" jointType="rotational" jointMin="-0.349066" jointMax="0.349066">
+        <position x="0.035" y="0.094458" z="0.004" />
+        <orientation x="-0.0916738" y="-0.0149014" z="-0.17026" />
+        <axis x="0" y="0" z="1" />
+        <frame jointName="Index F/E 1" jointType="rotational" jointMin="-1.571" jointMax="0">
+            <position x="0" y="0" z="0" />
+            <orientation x="0" y="-0" z="0" />
+            <axis x="1" y="0" z="0" />
+            <geom type="sphere" sx="0.01" sy="0.01" sz="0.01" tx="0" ty="0" tz="0" rx="0" ry="-0" rz="0" red="22" green="133" blue="97" />
+            <geom type="cylinder" sx="0.01" sy="0.01" sz="0.0375" tx="0" ty="0" tz="0" rx="-1.5708" ry="0" rz="0" red="22" green="133" blue="97" />
+            <frame jointName="Index F/E 2" jointType="rotational" jointMin="-1.571" jointMax="0">
+                <position x="0" y="0.0375" z="0" />
+                <orientation x="0.0726543" y="-0.00272022" z="0.0323945" />
+                <axis x="1" y="0" z="0" />
+                <geom type="sphere" sx="0.01" sy="0.01" sz="0.01" tx="0" ty="0" tz="0" rx="0" ry="-0" rz="0" red="22" green="133" blue="97" />
+                <geom type="cylinder" sx="0.009" sy="0.009" sz="0.0265" tx="0" ty="0" tz="0" rx="-1.5708" ry="0" rz="0" red="32" green="191" blue="139" />
+                <frame jointName="Index F/E 3" jointType="rotational" jointMin="-1.571" jointMax="0">
+                    <position x="0" y="0.0265" z="0" />
+                    <orientation x="0" y="-0" z="0" />
+                    <axis x="1" y="0" z="0" />
+                    <geom type="sphere" sx="0.009" sy="0.009" sz="0.009" tx="0" ty="0" tz="0" rx="0" ry="-0" rz="0" red="32" green="191" blue="139" />
+                    <geom type="cylinder" sx="0.008" sy="0.008" sz="0.014" tx="0" ty="0" tz="0" rx="-1.5708" ry="0" rz="0" red="111" green="231" blue="192" />
+                    <geom type="sphere" sx="0.008" sy="0.008" sz="0.008" tx="0" ty="0.014" tz="0" rx="0" ry="-0" rz="0" red="111" green="231" blue="192" />
+                </frame>
+            </frame>
+        </frame>
+    </frame>
+    <frame jointName="Middle A/A" jointType="rotational" jointMin="-0.349066" jointMax="0.349066">
+        <position x="0.01" y="0.097398" z="0.0015" />
+        <orientation x="-0.181131" y="-0.0130658" z="0.0272051" />
+        <axis x="0" y="0" z="1" />
+        <frame jointName="Middle F/E 1" jointType="rotational" jointMin="-1.571" jointMax="0">
+            <position x="0" y="0" z="0" />
+            <orientation x="0" y="-0" z="0" />
+            <axis x="1" y="0" z="0" />
+            <geom type="sphere" sx="0.01" sy="0.01" sz="0.01" tx="0" ty="0" tz="0" rx="0" ry="-0" rz="0" red="80" green="63" blue="113" />
+            <geom type="cylinder" sx="0.01" sy="0.01" sz="0.045" tx="0" ty="0" tz="0" rx="-1.5708" ry="0" rz="0" red="80" green="63" blue="113" />
+            <frame jointName="Middle F/E 2" jointType="rotational" jointMin="-1.571" jointMax="0">
+                <position x="0" y="0.045" z="0" />
+                <orientation x="0.11874" y="-1.97297e-05" z="0.000112961" />
+                <axis x="1" y="0" z="0" />
+                <geom type="sphere" sx="0.01" sy="0.01" sz="0.01" tx="0" ty="0" tz="0" rx="0" ry="-0" rz="0" red="80" green="63" blue="113" />
+                <geom type="cylinder" sx="0.009" sy="0.009" sz="0.03" tx="0" ty="0" tz="0" rx="-1.5708" ry="0" rz="0" red="110" green="87" blue="157" />
+                <frame jointName="Middle F/E 3" jointType="rotational" jointMin="-1.571" jointMax="0">
+                    <position x="0" y="0.03" z="0" />
+                    <orientation x="0" y="-0" z="0" />
+                    <axis x="1" y="0" z="0" />
+                    <geom type="sphere" sx="0.009" sy="0.009" sz="0.009" tx="0" ty="0" tz="0" rx="0" ry="-0" rz="0" red="110" green="87" blue="157" />
+                    <geom type="cylinder" sx="0.008" sy="0.008" sz="0.0164515" tx="0" ty="0" tz="0" rx="-1.5708" ry="0" rz="0" red="147" green="128" blue="184" />
+                    <geom type="sphere" sx="0.008" sy="0.008" sz="0.008" tx="0" ty="0.0164515" tz="0" rx="0" ry="-0" rz="0" red="147" green="128" blue="184" />
+                </frame>
+            </frame>
+        </frame>
+    </frame>
+    <frame jointName="Ring A/A" jointType="rotational" jointMin="-0.349066" jointMax="0.349066">
+        <position x="-0.016187" y="0.090907" z="-0.003" />
+        <orientation x="-0.0424415" y="-0.0107181" z="0.225009" />
+        <axis x="0" y="0" z="1" />
+        <frame jointName="Ring F/E 1" jointType="rotational" jointMin="-1.571" jointMax="0">
+            <position x="0" y="0" z="0" />
+            <orientation x="0" y="-0" z="0" />
+            <axis x="1" y="0" z="0" />
+            <geom type="sphere" sx="0.01" sy="0.01" sz="0.01" tx="0" ty="0" tz="0" rx="0" ry="-0" rz="0" red="149" green="98" blue="44" />
+            <geom type="cylinder" sx="0.01" sy="0.01" sz="0.0432693" tx="0" ty="0" tz="0" rx="-1.5708" ry="0" rz="0" red="149" green="98" blue="44" />
+            <frame jointName="Ring F/E 2" jointType="rotational" jointMin="-1.571" jointMax="0">
+                <position x="0" y="0.0432693" z="0" />
+                <orientation x="-0.0225772" y="-9.60508e-05" z="0.00327322" />
+                <axis x="1" y="0" z="0" />
+                <geom type="sphere" sx="0.01" sy="0.01" sz="0.01" tx="0" ty="0" tz="0" rx="0" ry="-0" rz="0" red="149" green="98" blue="44" />
+                <geom type="cylinder" sx="0.009" sy="0.009" sz="0.027041" tx="0" ty="0" tz="0" rx="-1.5708" ry="0" rz="0" red="198" green="132" blue="63" />
+                <frame jointName="Ring F/E 3" jointType="rotational" jointMin="-1.571" jointMax="0">
+                    <position x="0" y="0.027041" z="0" />
+                    <orientation x="-0.00302175" y="-0.00212364" z="0.0408103" />
+                    <axis x="1" y="0" z="0" />
+                    <geom type="sphere" sx="0.009" sy="0.009" sz="0.009" tx="0" ty="0" tz="0" rx="0" ry="-0" rz="0" red="198" green="132" blue="63" />
+                    <geom type="cylinder" sx="0.008" sy="0.008" sz="0.0157243" tx="0" ty="0" tz="0" rx="-1.5708" ry="0" rz="0" red="210" green="157" blue="102" />
+                    <geom type="sphere" sx="0.008" sy="0.008" sz="0.008" tx="0" ty="0.0157243" tz="0" rx="0" ry="-0" rz="0" red="210" green="157" blue="102" />
+                </frame>
+            </frame>
+        </frame>
+    </frame>
+    <frame jointName="Pinky A/A" jointType="rotational" jointMin="-1.1" jointMax="0.7">
+        <position x="-0.033" y="0.080873" z="-0.006" />
+        <orientation x="0.0420204" y="-0.00730115" z="0.466172" />
+        <axis x="0" y="0" z="1" />
+        <frame jointName="Pinky F/E 1" jointType="rotational" jointMin="-1.571" jointMax="0">
+            <position x="0" y="0" z="0" />
+            <orientation x="0" y="-0" z="0" />
+            <axis x="1" y="0" z="0" />
+            <geom type="sphere" sx="0.01" sy="0.01" sz="0.01" tx="0" ty="0" tz="0" rx="0" ry="-0" rz="0" red="233" green="217" blue="61" />
+            <geom type="cylinder" sx="0.01" sy="0.01" sz="0.025" tx="0" ty="0" tz="0" rx="-1.5708" ry="0" rz="0" red="233" green="217" blue="61" />
+            <frame jointName="Pinky F/E 2" jointType="rotational" jointMin="-1.571" jointMax="0">
+                <position x="0" y="0.025" z="0" />
+                <orientation x="0.0180004" y="-0.0031877" z="-0.0556892" />
+                <axis x="1" y="0" z="0" />
+                <geom type="sphere" sx="0.01" sy="0.01" sz="0.01" tx="0" ty="0" tz="0" rx="0" ry="-0" rz="0" red="233" green="217" blue="61" />
+                <geom type="cylinder" sx="0.009" sy="0.009" sz="0.021" tx="0" ty="0" tz="0" rx="-1.5708" ry="0" rz="0" red="241" green="232" blue="137" />
+                <frame jointName="Pinky F/E 3" jointType="rotational" jointMin="-1.571" jointMax="0">
+                    <position x="0" y="0.021" z="0" />
+                    <orientation x="-0.0564389" y="-0.00014898" z="-0.00198232" />
+                    <axis x="1" y="0" z="0" />
+                    <geom type="sphere" sx="0.009" sy="0.009" sz="0.009" tx="0" ty="0" tz="0" rx="0" ry="-0" rz="0" red="241" green="232" blue="137" />
+                    <geom type="cylinder" sx="0.008" sy="0.008" sz="0.021" tx="0" ty="0" tz="0" rx="-1.5708" ry="0" rz="0" red="247" green="241" blue="183" />
+                    <geom type="sphere" sx="0.008" sy="0.008" sz="0.008" tx="0" ty="0.021" tz="0" rx="0" ry="-0" rz="0" red="247" green="241" blue="183" />
+                </frame>
+            </frame>
+        </frame>
+    </frame>
+    <frame jointName="Thumb A/A" jointType="rotational" jointMin="-0.5" jointMax="1.1">
+        <position x="0.0275" y="0.02002" z="-0.0125" />
+        <orientation x="-1.30767" y="0.942138" z="-1.82039" />
+        <axis x="0" y="0" z="1" />
+        <frame jointName="Thumb F/E 1" jointType="rotational" jointMin="-1" jointMax="0.75">
+            <position x="0" y="0" z="0" />
+            <orientation x="0" y="-0" z="0" />
+            <axis x="1" y="0" z="0" />
+            <geom type="sphere" sx="0.014" sy="0.014" sz="0.014" tx="0" ty="0" tz="0" rx="0" ry="-0" rz="0" red="114" green="60" blue="80" />
+            <geom type="cylinder" sx="0.014" sy="0.014" sz="0.037" tx="0" ty="0" tz="0" rx="-1.5708" ry="0" rz="0" red="114" green="60" blue="80" />
+            <frame jointName="Thumb F/E 2" jointType="rotational" jointMin="-1.571" jointMax="0">
+                <position x="0" y="0.037" z="0" />
+                <orientation x="-0.203289" y="-0.0569043" z="-0.0680979" />
+                <axis x="1" y="0" z="0" />
+                <geom type="sphere" sx="0.014" sy="0.014" sz="0.014" tx="0" ty="0" tz="0" rx="0" ry="-0" rz="0" red="114" green="60" blue="80" />
+                <geom type="cylinder" sx="0.01" sy="0.01" sz="0.03" tx="0" ty="0" tz="0" rx="-1.5708" ry="0" rz="0" red="158" green="84" blue="112" />
+                <frame jointName="Thumb F/E 3" jointType="rotational" jointMin="-1.571" jointMax="0">
+                    <position x="0" y="0.03" z="0" />
+                    <orientation x="0" y="0.05236" z="0" />
+                    <axis x="1" y="0" z="0" />
+                    <geom type="sphere" sx="0.01" sy="0.01" sz="0.01" tx="0" ty="0" tz="0" rx="0" ry="-0" rz="0" red="158" green="84" blue="112" />
+                    <geom type="cylinder" sx="0.009" sy="0.009" sz="0.027" tx="0" ty="0" tz="0" rx="-1.5708" ry="0" rz="0" red="217" green="113" blue="138" />
+                    <geom type="sphere" sx="0.009" sy="0.009" sz="0.009" tx="0" ty="0.027" tz="0" rx="0" ry="-0" rz="0" red="217" green="113" blue="138" />
+                </frame>
+            </frame>
+        </frame>
+    </frame>
+</model>
