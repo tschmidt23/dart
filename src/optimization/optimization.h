@@ -65,6 +65,15 @@ struct OptimizationOptions {
 
 __host__ __device__ inline int JTJSize(const int dimensions) { return ((dimensions*(dimensions+1))>>1); }
 
+__host__ __device__ inline int JTJIndex(const int i, const int j){
+    if(i >= j){
+        return ((i*(i+1))>>1) + j;
+    }
+    else{
+        return ((j*(j+1))>>1) + i;
+    }
+}
+
 struct DataAssociatedPoint {
     int index;
     int dataAssociation;

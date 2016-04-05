@@ -84,17 +84,29 @@ private:
 
 template <typename T>
 MirroredVector<T>::MirroredVector(const uint length) : _length(length) {
-    cudaMallocHost(&_hVector,length*sizeof(T));
-    cudaMalloc(&_dVector,length*sizeof(T));
+    if(length != 0){
+        cudaMallocHost(&_hVector,length*sizeof(T));
+        cudaMalloc(&_dVector,length*sizeof(T));
+    }
+    else{
+        _hVector = NULL;
+        _dVector = NULL;
+    }
 }
 
 template <typename T>
 MirroredVector<T>::MirroredVector(const MirroredVector & other) {
     _length = other.length();
-    cudaMallocHost(&_hVector,_length*sizeof(T));
-    cudaMalloc(&_dVector,_length*sizeof(T));
-    cudaMemcpy(_hVector,other._hVector,_length*sizeof(T),cudaMemcpyHostToHost);
-    cudaMemcpy(_dVector,other._dVector,_length*sizeof(T),cudaMemcpyDeviceToDevice);
+    if(_length){
+        cudaMallocHost(&_hVector,_length*sizeof(T));
+        cudaMalloc(&_dVector,_length*sizeof(T));
+        cudaMemcpy(_hVector,other._hVector,_length*sizeof(T),cudaMemcpyHostToHost);
+        cudaMemcpy(_dVector,other._dVector,_length*sizeof(T),cudaMemcpyDeviceToDevice);
+    }
+    else{
+        _hVector = NULL;
+        _dVector = NULL;
+    }
 }
 
 
@@ -108,11 +120,20 @@ template <typename T>
 void MirroredVector<T>::resize(const uint length) {
     T * hTmp = _hVector;
     T * dTmp = _dVector;
-    cudaMallocHost(&_hVector,length*sizeof(T));
-    cudaMemcpy(_hVector,hTmp,std::min(_length,length)*sizeof(T),cudaMemcpyHostToHost);
+    if(length != 0){
+        // host
+        cudaMallocHost(&_hVector,length*sizeof(T));
+        cudaMemcpy(_hVector,hTmp,std::min(_length,length)*sizeof(T),cudaMemcpyHostToHost);
+        
+        // device
+        cudaMalloc(&_dVector,length*sizeof(T));
+        cudaMemcpy(_dVector,dTmp,std::min(_length,length)*sizeof(T),cudaMemcpyDeviceToDevice);
+    }
+    else{
+        _hVector = NULL;
+        _dVector = NULL;
+    }
     cudaFreeHost(hTmp);
-    cudaMalloc(&_dVector,length*sizeof(T));
-    cudaMemcpy(_dVector,dTmp,std::min(_length,length)*sizeof(T),cudaMemcpyDeviceToDevice);
     cudaFree(dTmp);
     _length = length;
 }
@@ -120,8 +141,10 @@ void MirroredVector<T>::resize(const uint length) {
 template <typename T>
 MirroredVector<T> & MirroredVector<T>::operator= (const MirroredVector<T> & other) {
     resize(other._length);
-    memcpy(_hVector,other._hVector,_length*sizeof(T));
-    cudaMemcpy(_dVector,other._dVector,_length*sizeof(T),cudaMemcpyDeviceToDevice);
+    if(_length != 0){
+        memcpy(_hVector,other._hVector,_length*sizeof(T));
+        cudaMemcpy(_dVector,other._dVector,_length*sizeof(T),cudaMemcpyDeviceToDevice);
+    }
     return *this;
 }
 
