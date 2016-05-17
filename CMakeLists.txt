@@ -268,3 +268,7 @@ if(${BUILD_TESTS} AND ${GTEST_FOUND})
     )
     target_link_libraries(test dart)
 endif()
+
+# installation of library and header files
+install(TARGETS ${PROJECT_NAME} LIBRARY DESTINATION lib)
+install(DIRECTORY src/ DESTINATION include/dart FILES_MATCHING PATTERN "*.h")
