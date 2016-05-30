@@ -27,6 +27,8 @@ pkg_check_modules(eigen3 REQUIRED eigen3)
 pkg_check_modules(tinyxml REQUIRED tinyxml)
 pkg_check_modules(matheval REQUIRED libmatheval)
 pkg_check_modules(assimp assimp)
+# LCM for subscribing to sensor data
+pkg_search_module(lcm lcm)
 
 include_directories(
     ${eigen3_INCLUDE_DIRS}
@@ -213,6 +215,17 @@ if(assimp_FOUND)
     add_definitions(-DASSIMP_BUILD)
 endif()
 
+# add LCM
+if(lcm_FOUND)
+    message(STATUS "LCM found. Enabling LCM for subscribing to depth topics")
+    include_directories(${lcm_INCLUDE_DIRS})
+    include_directories(src/depth_sources/lcm)
+    link_directories(${lcm_LIBRARY_DIRS})
+    link_libraries(${lcm_LIBRARIES})
+else()
+    message(WARNING "LCM not found. You won't be able to subscribe to LCM topics.")
+endif()
+
 include_directories(${PROJECT_SOURCE_DIR}/src/)
 
 # set up library output
@@ -228,6 +241,11 @@ if(CUDA_FOUND)
     cuda_add_library(${PROJECT_NAME} ${dart_src} ${point_cloud_srcs} ${depth_source_src} ${gpu_specific_src})
 else()
     add_library(${PROJECT_NAME} ${dart_src} ${point_cloud_srcs} ${depth_source_src} ${cpu_specific_src})
+endif()
+
+# link LCM to DART
+if(lcm_FOUND)
+    target_link_libraries(${PROJECT_NAME} ${lcm_LIBRARIES})
 endif()
 
 # testing
@@ -271,4 +289,4 @@ endif()
 
 # installation of library and header files
 install(TARGETS ${PROJECT_NAME} LIBRARY DESTINATION lib)
-install(DIRECTORY src/ DESTINATION include/dart FILES_MATCHING PATTERN "*.h")
+install(DIRECTORY src/ DESTINATION include/dart FILES_MATCHING PATTERN "*.h" PATTERN "*.hpp")
