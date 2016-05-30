@@ -86,6 +86,13 @@ public:
 
     inline const SE3 getTransformJointAxisToParent(const int joint) const { return _T_pf->hostPtr()[joint]; }
 
+    // Accessors for the kinematics code
+    inline const SE3 *getTransformsParentJointToFrame() const { return _T_pf->hostPtr(); }
+    inline const SE3 *getDeviceTransformsParentJointToFrame() const { return _T_pf->devicePtr(); }
+    inline const void syncKinematics() { _T_mf->syncDeviceToHost(); }
+    inline const void syncKinematicsHostToDevice() { _T_mf->syncHostToDevice(); }
+    inline SE3 *getTransformsFrameToModel() { return _T_mf->hostPtr(); }
+
 private:
 
     uint _modelID;
