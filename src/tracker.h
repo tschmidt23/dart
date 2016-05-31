@@ -27,6 +27,16 @@ public:
     Tracker();
     ~Tracker();
 
+    bool addModel(dart::HostOnlyModel &model,
+                  const float modelSdfResolution = 0.005,
+                  const float modelSdfPadding = 0.10,
+                  const int obsSdfSize = 64,
+                  float obsSdfResolution = -1,
+                  float3 obsSdfCenter = make_float3(0,0,0),
+                  PoseReduction * poseReduction = 0,
+                  const float collisionCloudDensity = 1e5,
+                  const bool cacheSdfs = true);
+
     bool addModel(const std::string & filename,
                   const float modelSdfResolution = 0.005,
                   const float modelSdfPadding = 0.10,
@@ -144,7 +154,10 @@ private:
     std::vector<PoseReduction *> _ownedPoseReductions;
     std::vector<Pose> _estimatedPoses;
 
-    std::vector<std::string> _filenames;
+    /**
+     * @brief _models list of pointers to all added models
+     */
+    std::vector<dart::HostOnlyModel> _models;
 
     std::vector<Eigen::MatrixXf *> _dampingMatrices;
     std::vector<Prior *> _priors;

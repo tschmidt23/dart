@@ -66,13 +66,6 @@ bool Tracker::addModel(const std::string & filename,
                        const float collisionCloudDensity,
                        const bool cacheSdfs) {
 
-    HostOnlyModel model;
-    if (!readModelXML(filename.c_str(),model)) {
-        return false;
-    }
-
-    model.computeStructure();
-
     std::cout << "loading model from " << filename << std::endl;
 
     const int lastSlash = filename.find_last_of('/');
@@ -82,11 +75,41 @@ bool Tracker::addModel(const std::string & filename,
     const std::string modelName = filename.substr(substrStart, diff > 0 ? diff : filename.size() - substrStart);
     std::cout << "model name: " << modelName << std::endl;
 
+    HostOnlyModel model;
+    if (!readModelXML(filename.c_str(), model)) {
+        return false;
+    }
+    else {
+        model.setName(modelName);
+        return addModel(model,
+                        modelSdfResolution,
+                        modelSdfPadding,
+                        obsSdfSize,
+                        obsSdfResolution,
+                        obsSdfOffset,
+                        poseReduction,
+                        collisionCloudDensity,
+                        cacheSdfs);
+    }
+}
+
+bool Tracker::addModel(dart::HostOnlyModel &model,
+                       const float modelSdfResolution,
+                       const float modelSdfPadding,
+                       const int obsSdfSize,
+                       float obsSdfResolution,
+                       float3 obsSdfOffset,
+                       PoseReduction * poseReduction,
+                       const float collisionCloudDensity,
+                       const bool cacheSdfs) {
+
+    model.computeStructure();
+
 //    // TODO
 //    if (model.getNumGeoms() < 2) {
 //        model.voxelize2(modelSdfResolution,modelSdfPadding,cacheSdfs ? dart::stringFormat("model%02d",_mirroredModels.size()) : "");
 //    } else {
-        model.voxelize(modelSdfResolution,modelSdfPadding,cacheSdfs ? dart::stringFormat("/tmp/%s",modelName.c_str()) : "");
+        model.voxelize(modelSdfResolution,modelSdfPadding,cacheSdfs ? dart::stringFormat("/tmp/%s", model.getName().c_str()) : "");
 //    }
 
     if (obsSdfResolution <= 0 ) {
@@ -138,7 +161,7 @@ bool Tracker::addModel(const std::string & filename,
     }
     _estimatedPoses.push_back(Pose(poseReduction));
 
-    _filenames.push_back(filename);
+    _models.push_back(model);
 
     // build collision cloud
     MirroredVector<float4> * collisionCloud = 0;
@@ -295,8 +318,8 @@ void Tracker::updateModel(const int modelNum,
     int modelID = _mirroredModels[modelNum]->getModelID();
     delete _mirroredModels[modelNum];
 
-    HostOnlyModel model;
-    readModelXML(_filenames[modelNum].c_str(),model);
+    // restore model
+    HostOnlyModel model = _models[modelNum];
 
     for (std::map<std::string,float>::const_iterator it = _sizeParams[modelNum].begin();
          it != _sizeParams[modelNum].end(); ++it) {

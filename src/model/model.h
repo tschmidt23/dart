@@ -112,6 +112,10 @@ public:
 
     virtual const SE3 getTransformJointAxisToParent(const int joint) const = 0;
 
+    const std::string getName() const { return _name; }
+
+    void setName(const std::string name) { _name = name; }
+
 protected:
     int _dimensionality;
 
@@ -140,6 +144,8 @@ protected:
 private:
 
     std::map<int,uint> _meshNumbers;
+
+    std::string _name;
 
     // geometry-level rendering
     void renderGeometries(void (Model::*prerenderFunc)(const int, const int, const char *) const,
