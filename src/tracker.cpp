@@ -126,6 +126,15 @@ bool Tracker::addModel(dart::HostOnlyModel &model,
 
     model.computeStructure();
 
+    unsigned int ngeom = 0;
+    for(unsigned int f=0; f<model.getNumFrames(); f++) {
+        ngeom += model.getFrameNumGeoms(f);
+    }
+    if(ngeom == 0) {
+        std::cerr<<"model "<<model.getName()<<" has no geometric shapes"<<std::endl;
+        return false;
+    }
+
 //    // TODO
 //    if (model.getNumGeoms() < 2) {
 //        model.voxelize2(modelSdfResolution,modelSdfPadding,cacheSdfs ? dart::stringFormat("model%02d",_mirroredModels.size()) : "");
