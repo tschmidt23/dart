@@ -49,6 +49,9 @@ Tracker::~Tracker() {
         delete matrix;
     }
 
+    // delete HostOnlyModels in _models
+    for(auto model_ptr: _models) { delete model_ptr; }
+
     delete _pcSource;
     delete _optimizer;
 
@@ -75,13 +78,15 @@ bool Tracker::addModel(const std::string & filename,
     const std::string modelName = filename.substr(substrStart, diff > 0 ? diff : filename.size() - substrStart);
     std::cout << "model name: " << modelName << std::endl;
 
-    HostOnlyModel model;
-    if (!readModelXML(filename.c_str(), model)) {
+    HostOnlyModel *model = new HostOnlyModel();
+    std::cout<<"new xml model at "<<model<<std::endl;
+    if (!readModelXML(filename.c_str(), *model)) {
+        delete model;
         return false;
     }
     else {
-        model.setName(modelName);
-        return addModel(model,
+        model->setName(modelName);
+        return addModel(*model,
                         modelSdfResolution,
                         modelSdfPadding,
                         obsSdfSize,
@@ -161,7 +166,7 @@ bool Tracker::addModel(dart::HostOnlyModel &model,
     }
     _estimatedPoses.push_back(Pose(poseReduction));
 
-    _models.push_back(model);
+    _models.push_back(&model);
 
     // build collision cloud
     MirroredVector<float4> * collisionCloud = 0;
@@ -319,7 +324,7 @@ void Tracker::updateModel(const int modelNum,
     delete _mirroredModels[modelNum];
 
     // restore model
-    HostOnlyModel model = _models[modelNum];
+    HostOnlyModel model = *(_models[modelNum]);
 
     for (std::map<std::string,float>::const_iterator it = _sizeParams[modelNum].begin();
          it != _sizeParams[modelNum].end(); ++it) {

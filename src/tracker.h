@@ -157,7 +157,7 @@ private:
     /**
      * @brief _models list of pointers to all added models
      */
-    std::vector<dart::HostOnlyModel> _models;
+    std::vector<HostOnlyModel*> _models;
 
     std::vector<Eigen::MatrixXf *> _dampingMatrices;
     std::vector<Prior *> _priors;
