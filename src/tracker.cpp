@@ -79,7 +79,6 @@ bool Tracker::addModel(const std::string & filename,
     std::cout << "model name: " << modelName << std::endl;
 
     HostOnlyModel *model = new HostOnlyModel();
-    std::cout<<"new xml model at "<<model<<std::endl;
     bool ret;
     if (!readModelXML(filename.c_str(), *model)) {
         ret = false;
