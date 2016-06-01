@@ -80,13 +80,13 @@ bool Tracker::addModel(const std::string & filename,
 
     HostOnlyModel *model = new HostOnlyModel();
     std::cout<<"new xml model at "<<model<<std::endl;
+    bool ret;
     if (!readModelXML(filename.c_str(), *model)) {
-        delete model;
-        return false;
+        ret = false;
     }
     else {
         model->setName(modelName);
-        return addModel(*model,
+        ret = addModel(*model,
                         modelSdfResolution,
                         modelSdfPadding,
                         obsSdfSize,
@@ -96,8 +96,24 @@ bool Tracker::addModel(const std::string & filename,
                         collisionCloudDensity,
                         cacheSdfs);
     }
+    delete model;
+    return ret;
 }
 
+/**
+ * @brief Tracker::addModel pre-processes model and adds a copy to tracker
+ * @param model model to track, a copy will be created and the passed instance can be deleted after method call returns
+ * @param modelSdfResolution
+ * @param modelSdfPadding
+ * @param obsSdfSize
+ * @param obsSdfResolution
+ * @param obsSdfOffset
+ * @param poseReduction
+ * @param collisionCloudDensity
+ * @param cacheSdfs
+ * @return true on success
+ * @return false on failure
+ */
 bool Tracker::addModel(dart::HostOnlyModel &model,
                        const float modelSdfResolution,
                        const float modelSdfPadding,
@@ -166,7 +182,9 @@ bool Tracker::addModel(dart::HostOnlyModel &model,
     }
     _estimatedPoses.push_back(Pose(poseReduction));
 
-    _models.push_back(&model);
+    // we need to copy as we don't know if memory was allocated on stack or heap
+    // and object pointed by stored pointer will be deallocated in deconstructor
+    _models.push_back( new HostOnlyModel(model) );
 
     // build collision cloud
     MirroredVector<float4> * collisionCloud = 0;
