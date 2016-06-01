@@ -272,3 +272,18 @@ endif()
 # installation of library and header files
 install(TARGETS ${PROJECT_NAME} LIBRARY DESTINATION lib)
 install(DIRECTORY src/ DESTINATION include/dart FILES_MATCHING PATTERN "*.h")
+
+# setup pkg-config files
+#SET(PKG_CONFIG_REQUIRES "tinyxml libpng libmatheval eigen3")
+SET(PKG_CONFIG_LIBDIR       "\${prefix}/lib" )
+SET(PKG_CONFIG_INCLUDEDIR   "\${prefix}/include" )
+SET(PKG_CONFIG_LIBS         "-L\${libdir} -l${PROJECT_NAME}" )
+SET(PKG_CONFIG_CFLAGS       "-I\${includedir}" )
+
+CONFIGURE_FILE(
+  "${CMAKE_CURRENT_SOURCE_DIR}/pkg-config.pc.cmake"
+  "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.pc"
+)
+
+INSTALL(FILES "${CMAKE_BINARY_DIR}/${PROJECT_NAME}.pc"
+        DESTINATION lib/pkgconfig)
