@@ -341,17 +341,17 @@ void Tracker::updateModel(const int modelNum,
     int modelID = _mirroredModels[modelNum]->getModelID();
     delete _mirroredModels[modelNum];
 
-    // restore model
-    HostOnlyModel model = *(_models[modelNum]);
+    // get reference to model
+    HostOnlyModel *model = _models[modelNum];
 
     for (std::map<std::string,float>::const_iterator it = _sizeParams[modelNum].begin();
          it != _sizeParams[modelNum].end(); ++it) {
-        model.setSizeParam(it->first,it->second);
+        (*model).setSizeParam(it->first,it->second);
     }
 
-    model.computeStructure();
-    model.voxelize(modelSdfResolution,modelSdfPadding);
-    MirroredModel * newModel = new MirroredModel(model,
+    (*model).computeStructure();
+    (*model).voxelize(modelSdfResolution,modelSdfPadding);
+    MirroredModel * newModel = new MirroredModel(*model,
                                                  make_uint3(obsSdfSize),
                                                  obsSdfResolution,
                                                  obsSdfCenter,
