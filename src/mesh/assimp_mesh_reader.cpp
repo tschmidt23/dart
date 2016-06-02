@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include <assimp/cimport.h>
+#include <assimp/postprocess.h>
 #include <assimp/scene.h>
 #include <vector_types.h>
 #include <vector_functions.h>
@@ -10,7 +11,12 @@ namespace dart {
 
 dart::Mesh * AssimpMeshReader::readMesh(const std::string filename) const {
 
-    const struct aiScene * scene = aiImportFile(filename.c_str(),0); //aiProcess_JoinIdenticalVertices);
+    // define import flags for assimp
+    const unsigned int import_flags = aiProcess_Triangulate | aiProcess_SortByPType;
+    // aiProcess_Triangulate: triangulate ploygones such that all vertices have 3 points
+    // aiProcess_SortByPType: split meshes with mixed types into separate meshes
+
+    const struct aiScene * scene = aiImportFile(filename.c_str(), import_flags); //aiProcess_JoinIdenticalVertices);
 
     if (scene == 0) {
         std::cerr << "error: " << aiGetErrorString() << std::endl;
