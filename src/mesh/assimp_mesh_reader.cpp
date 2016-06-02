@@ -45,8 +45,17 @@ dart::Mesh * AssimpMeshReader::readMesh(const std::string filename) const {
         for (int v=0; v<mesh->nVertices; ++v) {
             aiVector3D & vertex = aiMesh->mVertices[v];
             mesh->vertices[v] = make_float3(vertex.x,vertex.y,vertex.z);
-            aiVector3D & normal = aiMesh->mNormals[v];
-            mesh->normals[v] = make_float3(normal.x,normal.y,normal.z);
+
+        }
+
+        if(aiMesh->HasNormals()) {
+            for(unsigned int n=0; n<aiMesh->mNumVertices; n++) {
+                aiVector3D & normal = aiMesh->mNormals[n];
+                mesh->normals[n] = make_float3(normal.x,normal.y,normal.z);
+            }
+        }
+        else {
+            std::cout<<"triangle mesh in "<<filename<<" has no normals"<<std::endl;
         }
     } // if aiMesh!=NULL
     else {
