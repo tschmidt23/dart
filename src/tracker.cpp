@@ -479,4 +479,12 @@ void Tracker::setIntersectionPotentialMatrix(const int modelNum, const int * mx)
     _intersectionPotentialMatrices[modelNum]->syncHostToDevice();
 }
 
+int Tracker::getModelIDbyName(const std::string &name) const {
+    for(unsigned int i=0; i<_models.size(); i++) {
+        if(_models[i]->getName() == name)
+            return i;
+    }
+    return -1;
+}
+
 }

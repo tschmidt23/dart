@@ -21,6 +21,7 @@ Model::Model(const Model & copy) {
     _T_cm = copy._T_cm;
     _jointLimits = copy._jointLimits;
     _jointNames = copy._jointNames;
+    _name = copy._name;
 
 }
 
