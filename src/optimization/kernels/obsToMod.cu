@@ -629,7 +629,7 @@ void normEqnsObsToMod(const int dims,
                       float * dResult,
                       float4 * debugJs) {
 
-    std::cout << nElements << " points associated to model " << model.getModelID() << std::endl;
+    //std::cout << nElements << " points associated to model " << model.getModelID() << std::endl;
 
     dim3 block;
     if (height == 1) {

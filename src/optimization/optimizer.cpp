@@ -696,7 +696,7 @@ void Optimizer::optimizePoses(std::vector<MirroredModel *> & models,
             // add damping matrix
             JTJ += *dampingMatrices[m];
 
-            std::cout << JTJ << std::endl << std::endl << std::endl;
+            //std::cout << JTJ << std::endl << std::endl << std::endl;
 
             for (int i=0; i<reducedDimensions; ++i) {
                 for (int j=i; j<reducedDimensions; ++j) {
