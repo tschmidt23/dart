@@ -239,12 +239,14 @@ bool extract_frames(const int parent_id, LinkConstPtr &link, ModelInterfaceConst
             max = std::to_string(limits->upper);
         }
         else {
+            std::cout<<"ignoring limits of ";
             switch(j->type) {
             case urdf::Joint::FIXED:
-                std::cout<<"ignoring limits of FIXED joint: "<<name<<std::endl; break;
+                std::cout<<"FIXED"; break;
             case urdf::Joint::CONTINUOUS:
-                std::cout<<"ignoring limits of CONTINUOUS joint: "<<name<<std::endl; break;
+                std::cout<<"CONTINUOUS"; break;
             }
+            std::cout<<" joint: "<<name<<std::endl;
             min = "0";
             max = "0";
         }
