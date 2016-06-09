@@ -34,7 +34,7 @@ __global__ void gpu_depthToVertices(const DepthType * depthIn,
 
     }
     else {
-        vertOut[index].w = 0;
+        vertOut[index].w = NAN;
     }
 
 }
@@ -67,7 +67,7 @@ __global__ void gpu_depthToVertices(const DepthType * depthIn,
 
     }
     else {
-        vertOut[index].w = 0;
+        vertOut[index].w = NAN;
     }
 
 }
@@ -103,7 +103,7 @@ __global__ void gpu_depthToVertices(const DepthType * depthIn,
 
     }
     else {
-        vertOut[index].w = 0;
+        vertOut[index].w = NAN;
     }
 
 }
@@ -140,7 +140,7 @@ __global__ void gpu_depthToVertices(const DepthType * depthIn,
 
     }
     else {
-        vertOut[index].w = 0;
+        vertOut[index].w = NAN;
     }
 
 }
@@ -198,7 +198,7 @@ __global__ void gpu_depthToVertices(const DepthType * depthIn,
 
     }
     else {
-        vertOut[index].w = 0;
+        vertOut[index].w = NAN;
     }
 
 }
@@ -257,7 +257,7 @@ __global__ void gpu_depthToVertices(const DepthType * depthIn,
 
     }
     else {
-        vertOut[index].w = 0;
+        vertOut[index].w = NAN;
     }
 
 }
