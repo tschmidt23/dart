@@ -206,6 +206,14 @@ void Model::renderVoxelizedFrame(const int frameNumber, const char* args) const 
     }
 }
 
+int Model::getJointIdByName(const std::string &name) {
+    const auto pos = std::find(_jointNames.begin(), _jointNames.end(), name);
+    if(pos != _jointNames.end())
+        return std::distance(_jointNames.begin(), pos);
+    else
+        throw std::range_error("requested joint '"+name+"' does not exist"); // not found
+}
+
 void Model::renderSdf(const dart::Grid3D<float> & sdf, float levelSet) const {
 
     glDisable(GL_BLEND);
