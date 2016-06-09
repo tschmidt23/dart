@@ -144,6 +144,84 @@ __global__ void gpu_normEqnsSelfIntersection(const float4 * testSites,
 
 }
 
+// Computes a single intersection
+template <bool dbgErr>
+__global__ void gpu_normEquationsIntersectionRaw(const float4 * testSites,
+                                              const int nSites,
+                                              const SE3 T_ds,
+                                              const SE3 T_sd,
+                                              const SE3 * T_mfs_src,
+                                              const SE3 * T_fms_src,
+                                              const int nFramesSrc,
+                                              const int * sdfFrames_src,
+                                              const SE3 * T_mfs_dst,
+                                              const SE3 * T_fms_dst,
+                                              const int nFramesDst,
+                                              const int nConfigs,
+                                              const int * sdfFrames_dst,
+                                              const Grid3D<float> * sdfs_dst,
+                                              const int nSdfs_dst,
+                                              float * result,
+                                              int * resultSdf,
+                                              bool vary_dst,
+                                              float * debugError) {
+
+    const int index = blockIdx.x*blockDim.x + threadIdx.x;
+    const int configIdx = blockIdx.y*blockDim.y + threadIdx.y;
+    // index corresponds to which pair of T_mfs_src, T_mfs_dst we are using
+    if (configIdx >= nConfigs) {
+      return;
+    }
+    // setup pointers correctly
+    T_mfs_src = T_mfs_src + configIdx * nFramesSrc;
+    T_fms_src = T_fms_src + configIdx * nFramesSrc;
+    if (vary_dst) {
+      T_mfs_dst = T_mfs_dst + configIdx * nFramesDst;
+      T_fms_dst = T_fms_dst + configIdx * nFramesDst;
+    }
+    result = result + configIdx * (nSites * nConfigs);
+    resultSdf = resultSdf + configIdx * (nSites * nConfigs);
+
+
+    // overflow
+    if (index >= nSites) {
+        return;
+    }
+
+    float4 v_src_f = testSites[index];
+    const int srcGrid = round(v_src_f.w);
+    const int srcFrame = sdfFrames_src[srcGrid];
+
+    v_src_f.w = 1;
+    const float4 v_src_m = T_mfs_src[srcFrame]*v_src_f;
+    const float4 v_dst_m = T_ds*v_src_m;
+
+    int dstIdx = -1;
+    float smallestResidual = 1.0e50;
+
+    for (int dstGrid=0; dstGrid<nSdfs_dst; ++dstGrid) {
+
+        const int dstFrame = sdfFrames_dst[dstGrid];
+        const float4 v_dst_f = T_fms_dst[dstFrame]*v_dst_m;
+
+        const Grid3D<float> & dstSdf = sdfs_dst[dstGrid];
+        const float3 v_dst_g = dstSdf.getGridCoords(make_float3(v_dst_f));
+
+        if (dstSdf.isInBoundsGradientInterp(v_dst_g)) {
+
+            const float residual = dstSdf.getValueInterpolated(v_dst_g)*dstSdf.resolution;
+            if (residual < smallestResidual) {
+              dstIdx = dstGrid;
+              smallestResidual = residual;
+            }
+        }
+
+    }
+    result[index] = smallestResidual;
+    resultSdf[index] = dstIdx;
+
+}
+
 __global__ void gpu_normEqnsSelfIntersectionReduced(const float4 * testSites,
                                                     const int nSites,
                                                     const int fullDims,
@@ -839,6 +917,104 @@ void normEqnsIntersection(const float4 * testSites,
 
 }
 
+void normEqnsIntersectionRaw(const float4 * testSites,
+                          const int nSites,
+                          const SE3 T_ds,
+                          const SE3 T_sd,
+                          const SE3 *src_T_mfs,
+                          const SE3 *src_T_fms,
+                          const int nFramesSrc, // number of frames per joint config
+                          const SE3 *dst_T_mfs,
+                          const SE3 *dst_T_fms,
+                          const int nFramesDst, // number of frames per joint config
+                          const int nConfigs,// number of total joint configs
+                          const MirroredModel & srcModel,
+                          const MirroredModel & dstModel,
+                          float * result,
+                          int * resultsdf,
+                          float * debugError) {
+    cudaMemset(result,0,(nSites*nConfigs)*sizeof(float));
+    cudaMemset(resultsdf,1,(nSites*nConfigs)*sizeof(int));
+    dim3 block(64,64,1);
+    dim3 grid(ceil(nSites/(float)block.x),ceil(nConfigs/(float)block.y),1);
+    if (debugError == 0) {
+        gpu_normEquationsIntersectionRaw<false><<<grid,block>>>(testSites, nSites,
+                                                                                    T_ds, T_sd,
+                                                                                    src_T_mfs, src_T_fms,
+                                                                                    nFramesSrc,
+                                                                                    srcModel.getDeviceSdfFrames(),
+                                                                                    dst_T_mfs, dst_T_fms,
+                                                                                    nFramesDst,
+                                                                                    nConfigs,
+                                                                                    dstModel.getDeviceSdfFrames(),
+                                                                                    dstModel.getDeviceSdfs(),
+                                                                                    dstModel.getNumSdfs(),
+                                                                                    result, resultsdf, true, debugError);
+    } else {
+        gpu_normEquationsIntersectionRaw<true><<<grid,block>>>(testSites, nSites,
+                                                                                    T_ds, T_sd,
+                                                                                    src_T_mfs, src_T_fms,
+                                                                                    nFramesSrc,
+                                                                                    srcModel.getDeviceSdfFrames(),
+                                                                                    dst_T_mfs, dst_T_fms,
+                                                                                    nFramesDst,
+                                                                                    nConfigs,
+                                                                                    dstModel.getDeviceSdfFrames(),
+                                                                                    dstModel.getDeviceSdfs(),
+                                                                                    dstModel.getNumSdfs(),
+                                                                                    result, resultsdf, true, debugError);
+    }
+}
+
+void normEqnsIntersectionRawSingleTgt(const float4 * testSites,
+                          const int nSites,
+                          const SE3 T_ds,
+                          const SE3 T_sd,
+                          const SE3 *src_T_mfs,
+                          const SE3 *src_T_fms,
+                          const int nFramesSrc, // number of frames per joint config
+                          const SE3 *dst_T_mf,
+                          const SE3 *dst_T_fm,
+                          const int nFramesDst, // number of frames per joint config
+                          const int nConfigs,// number of total joint configs
+                          const MirroredModel & srcModel,
+                          const MirroredModel & dstModel,
+                          float * result,
+                          int * resultsdf,
+                          float * debugError) {
+    cudaMemset(result,0,(nSites*nConfigs)*sizeof(float));
+    cudaMemset(resultsdf,1,(nSites*nConfigs)*sizeof(int));
+    dim3 block(64,64,1);
+    dim3 grid(ceil(nSites/(float)block.x),ceil(nConfigs/(float)block.y),1);
+    if (debugError == 0) {
+        gpu_normEquationsIntersectionRaw<false><<<grid,block>>>(testSites, nSites,
+                                                                                    T_ds, T_sd,
+                                                                                    src_T_mfs, src_T_fms,
+                                                                                    nFramesSrc,
+                                                                                    srcModel.getDeviceSdfFrames(),
+                                                                                    dst_T_mf, dst_T_fm,
+                                                                                    nFramesDst,
+                                                                                    nConfigs,
+                                                                                    dstModel.getDeviceSdfFrames(),
+                                                                                    dstModel.getDeviceSdfs(),
+                                                                                    dstModel.getNumSdfs(),
+                                                                                    result, resultsdf, false, debugError);
+    } else {
+        gpu_normEquationsIntersectionRaw<true><<<grid,block>>>(testSites, nSites,
+                                                                                    T_ds, T_sd,
+                                                                                    src_T_mfs, src_T_fms,
+                                                                                    nFramesSrc,
+                                                                                    srcModel.getDeviceSdfFrames(),
+                                                                                    dst_T_mf, dst_T_fm,
+                                                                                    nFramesDst,
+                                                                                    nConfigs,
+                                                                                    dstModel.getDeviceSdfFrames(),
+                                                                                    dstModel.getDeviceSdfs(),
+                                                                                    dstModel.getNumSdfs(),
+                                                                                    result, resultsdf, false, debugError);
+    }
+}
+
 
 void normEqnsSelfIntersectionReduced(const float4 * testSites,
                                   const int nSites,
@@ -994,5 +1170,4 @@ void initDebugIntersectionError(float * debugError,
     gpu_initDebugIntersectionError<<<grid,block>>>(debugError, nSites);
 
 }
-
 }

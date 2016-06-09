@@ -11,17 +11,25 @@
 
 namespace dart {
 
+// Computes forward kkinematics for a single joint configuration on the GPU
+// puts it in the mirrored model passed in
 void computeForwardKinematics(
         float *pose,
         int poselen,
         MirroredModel &robot,
         MirroredVector<float2> *limits);
 
-// WARNING: make sure to free the array that is returned once finished.
+// poses is a contiguous block of 1d arrays (e.g. floats 0-poselen are pose 1,
+// poselen-2*poselen is pose 2. up to nposes
+// benchmark is to turn on benchmark logging
+// returns a 2D array of transforms, caller is responsible for freeing the result
+// as well as array of poses passed in
+// WARNING: make sure to free the array that is returned once finished
 SE3 **computeForwardKinematicsBatch(float *poses, int nposes,
         int poselen,
         MirroredModel &robot,
-        MirroredVector<float2> *limits);
+        MirroredVector<float2> *limits,
+        bool benchmark=false);
 
 // will compute both forward and backward kinematics, will put FK in t_mfs,
 // inverse kinematics in t_fms
@@ -44,6 +52,7 @@ void computeKinematicsBatch(
 // pose 2 is at t_mfs + numframes
 // etc...
 // WARNING: caller is responsible for eventually freeing the gpu memory of t_mfs, t_fms
+// (use cudaFree)
 void computeKinematicsBatchGPU(
     float *poses,
     int nposes,

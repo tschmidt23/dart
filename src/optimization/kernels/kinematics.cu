@@ -12,7 +12,6 @@
 namespace dart {
 
 static const float truncVal = 1000.0;
-static const bool BENCHMARK = false;
 
 
 // -=-=-=-=-=-=-=-=-=- kernels -=-=-=-=-=-=-=-=-=-
@@ -185,7 +184,8 @@ SE3 **computeForwardKinematicsBatch(
         int nposes,
         int ndims,
         MirroredModel &robot,
-        MirroredVector<float2> *limits) {
+        MirroredVector<float2> *limits,
+        bool BENCHMARK) {
 
     clock_t s,e;
     if (BENCHMARK) s = clock();
