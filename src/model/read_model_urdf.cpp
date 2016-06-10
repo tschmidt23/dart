@@ -268,9 +268,9 @@ bool extract_frames(const int parent_id, LinkConstPtr &link, ModelInterfaceConst
 /**
  * @brief readModelURDF readModelURDF parse URDF model description and store kinematic and meshes in DART model format
  */
-bool readModelURDF(const std::string path, HostOnlyModel &model,
-                   const std::string root_link_name,
-                   const std::string mesh_extension_surrogate)
+bool readModelURDF(const std::string &path, HostOnlyModel &model,
+                   const std::string &root_link_name,
+                   const std::string &mesh_extension_surrogate)
 {
     // parse URDF file
     ModelInterfaceConstPtr urdf_model = urdf::parseURDFFile(path);
@@ -311,6 +311,13 @@ bool readModelURDF(const std::string path, HostOnlyModel &model,
         std::cerr<<"could not find root link "<<root_link_name<<std::endl;
         return false;
     }
+}
+
+const HostOnlyModel &readModelURDF(const std::string &path, const std::string &root_link_name, const std::string &mesh_extension_surrogate)
+{
+    HostOnlyModel *model = new HostOnlyModel();
+    readModelURDF(path, *model, root_link_name, mesh_extension_surrogate);
+    return *model;
 }
 
 } // namespace dart
