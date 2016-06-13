@@ -92,6 +92,9 @@ public:
     inline const Pose & getPose(const std::string &modelName) const {
         return _estimatedPoses.at(getModelIDbyName(modelName));
     }
+    inline Pose & getPose(const std::string &modelName) {
+        return _estimatedPoses.at(getModelIDbyName(modelName));
+    }
     inline std::map<std::string,float> & getSizeParams(const int modelNum) { return _sizeParams[modelNum]; }
     inline const float4 * getHostVertMap() { return _pcSource->getHostVertMap(); }
     inline const float4 * getHostNormMap() { return _pcSource->getHostNormMap(); }
