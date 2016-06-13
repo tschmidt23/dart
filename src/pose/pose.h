@@ -3,6 +3,7 @@
 
 #include <string>
 #include <vector>
+#include <map>
 #include <string.h>
 #include "pose_reduction.h"
 #include "util/mirrored_memory.h"
@@ -35,6 +36,8 @@ public:
     inline const float * getArticulation() const { return _fullArticulation; }
 
     inline const float * getReducedArticulation() const { return _reducedArticulation; }
+
+    void setReducedArticulation(const std::map<std::string, float> &joint_map);
 
     virtual void projectReducedToFull() { return _reduction->projectReducedToFull(_reducedArticulation,_fullArticulation); }
 
