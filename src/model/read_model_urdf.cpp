@@ -245,6 +245,8 @@ bool extract_frames(const int parent_id, LinkConstPtr &link, ModelInterfaceConst
                 std::cout<<"FIXED"; break;
             case urdf::Joint::CONTINUOUS:
                 std::cout<<"CONTINUOUS"; break;
+            default:
+                std::cout<<"type "<<j->type<<std::endl;
             }
             std::cout<<" joint: "<<name<<std::endl;
             min = "0";
