@@ -136,8 +136,14 @@ bool extract_frames(const int parent_id, LinkConstPtr &link, ModelInterfaceConst
             sx = std::to_string(scale.x);
             sy = std::to_string(scale.y);
             sz = std::to_string(scale.z);
-            // we need to replace "package://" by full path
-            boost::algorithm::replace_first(mesh_path, PACKAGE_PATH_URI_SCHEME, conf.package_path);
+            if(mesh_path.find(PACKAGE_PATH_URI_SCHEME) != std::string::npos) {
+                // we need to replace "package://" by full path
+                boost::algorithm::replace_first(mesh_path, PACKAGE_PATH_URI_SCHEME, conf.package_path);
+            }
+            else {
+                // prepend full path
+                mesh_path = conf.package_path + mesh_path;
+            }
             if(!conf.mesh_extension_surrogate.empty()) {
                 mesh_path = boost::filesystem::path(mesh_path).
                         replace_extension(conf.mesh_extension_surrogate).native();
@@ -299,8 +305,15 @@ bool readModelURDF(const std::string &path, HostOnlyModel &model,
             fpath = fpath.parent_path();
         }
 
-        // store package path with trailing directory seperator
-        conf.package_path = fpath.branch_path().native() + boost::filesystem::path::preferred_separator;
+        if(!boost::filesystem::is_regular_file(fpath / PACKAGE_PATH_FILE)) {
+            // package path not found, use relative path
+            conf.package_path = boost::filesystem::canonical(path).parent_path().native()
+                    + boost::filesystem::path::preferred_separator;
+        }
+        else {
+            // store package path with trailing directory seperator
+            conf.package_path = fpath.branch_path().native() + boost::filesystem::path::preferred_separator;
+        }
         std::cout<<"URDF package path: "<<conf.package_path<<std::endl;
 
         //conf.mesh_extension_surrogate = std::make_pair(".dae", ".obj");
