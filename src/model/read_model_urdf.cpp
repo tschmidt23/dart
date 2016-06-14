@@ -170,10 +170,19 @@ bool extract_frames(const int parent_id, LinkConstPtr &link, ModelInterfaceConst
         ry = std::to_string(pitch);   // pitch: rotation around y-axis (facing right)
         rz = std::to_string(yaw);     // yaw: rotation around z-axis (facing down)
 
-        // gray
-        r = conf.colour[0];
-        g = conf.colour[1];
-        b = conf.colour[2];
+        // colour
+        if(link->visual->material!=NULL) {
+            urdf::Color colour = link->visual->material->color;
+            r = colour.r*255;
+            g = colour.g*255;
+            b = colour.b*255;
+        }
+        else {
+            // use default values
+            r = conf.colour[0];
+            g = conf.colour[1];
+            b = conf.colour[2];
+        }
 
         model.addGeometry(parent_id, geom_type,
                           sx, sy, sz,
