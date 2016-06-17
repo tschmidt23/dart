@@ -51,8 +51,6 @@ void Pose::setReducedArticulation(const std::map<std::string, float> &joint_map)
         // only access key (name) if it exists
         if(joint_map.count(_reduction->getName(i))>0)
             _reducedArticulation[i] = joint_map.at(_reduction->getName(i));
-        else
-            std::cout<<"not found: "<<_reduction->getName(i)<<std::endl;
     }
 }
 
