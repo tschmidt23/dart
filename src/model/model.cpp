@@ -211,7 +211,7 @@ int Model::getJointIdByName(const std::string &name) {
     if(pos != _jointNames.end())
         return std::distance(_jointNames.begin(), pos);
     else
-        throw std::range_error("requested joint '"+name+"' does not exist"); // not found
+        throw std::range_error("requested frame '"+name+"' does not exist");
 }
 
 void Model::renderSdf(const dart::Grid3D<float> & sdf, float levelSet) const {
