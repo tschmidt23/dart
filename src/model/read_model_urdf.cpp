@@ -296,6 +296,9 @@ bool readModelURDF(const std::string &path, HostOnlyModel &model,
     std::cout<<"found URDF robot: "<<urdf_model->getName()<<std::endl;
     model.setName(urdf_model->getName());
 
+    // fix DART model version (currently 0 and above is checked)
+    model.setModelVersion(1);
+
     // get root link
     boost::shared_ptr<const urdf::Link> l_root;
     l_root = root_link_name.empty()? urdf_model->getRoot() : urdf_model->getLink(root_link_name);
