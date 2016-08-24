@@ -12,6 +12,8 @@
 #define PACKAGE_PATH_FILE "package.xml"
 #define PACKAGE_PATH_URI_SCHEME "package://"
 
+//#define PRNT_DBG
+
 namespace dart {
 
 /// type definitions for shared pointers
@@ -29,15 +31,17 @@ typedef std::vector< boost::shared_ptr< urdf::Joint > > JointPtrVec;
  * @brief The MeshLoaderConfig struct
  */
 struct MeshLoaderConfig {
+
     /**
      * @brief package_path store absolute path to URDF package rot directory
      */
     std::string package_path;
+
     /**
      * @brief mesh_extension_surrogate optionally replace mesh file extension
      */
-    //std::pair<std::string, std::string> mesh_extension_surrogate;
     std::string mesh_extension_surrogate;
+
     /**
      * @brief colour RGB colour definition for untextured meshes
      */
@@ -87,7 +91,9 @@ bool extract_frames(const int parent_id, LinkConstPtr &link, ModelInterfaceConst
 
     JointPtrVec joints = link->child_joints;
 
+#ifdef PRNT_DBG
     std::cout<<"id: "<<parent_id<<" (link: "<<link->name<<", joints: "<<joints.size()<<")"<<std::endl;
+#endif
 
     /////////////////////////////////////////////////////
     /// get geometric volume
@@ -148,7 +154,9 @@ bool extract_frames(const int parent_id, LinkConstPtr &link, ModelInterfaceConst
                 mesh_path = boost::filesystem::path(mesh_path).
                         replace_extension(conf.mesh_extension_surrogate).native();
             }
+#ifdef PRNT_DBG
             std::cout<<"loading mesh from: "<<mesh_path<<std::endl;
+#endif
         }
             break;
         default:
@@ -207,7 +215,9 @@ bool extract_frames(const int parent_id, LinkConstPtr &link, ModelInterfaceConst
         // name
         name = j->name;
 
+#ifdef PRNT_DBG
         std::cout<<"processing joint: "<<name<<std::endl;
+#endif
 
         // joint type
         switch(j->type) {
@@ -254,6 +264,7 @@ bool extract_frames(const int parent_id, LinkConstPtr &link, ModelInterfaceConst
             max = std::to_string(limits->upper);
         }
         else {
+#ifdef PRNT_DBG
             std::cout<<"ignoring limits of ";
             switch(j->type) {
             case urdf::Joint::FIXED:
@@ -264,6 +275,7 @@ bool extract_frames(const int parent_id, LinkConstPtr &link, ModelInterfaceConst
                 std::cout<<"type "<<j->type<<std::endl;
             }
             std::cout<<" joint: "<<name<<std::endl;
+#endif
             min = "0";
             max = "0";
         }
@@ -328,7 +340,6 @@ bool readModelURDF(const std::string &path, HostOnlyModel &model,
         }
         std::cout<<"URDF package path: "<<conf.package_path<<std::endl;
 
-        //conf.mesh_extension_surrogate = std::make_pair(".dae", ".obj");
         conf.mesh_extension_surrogate = mesh_extension_surrogate;
 
         // extract links and joints recursively
