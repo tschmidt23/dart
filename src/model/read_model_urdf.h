@@ -1,7 +1,7 @@
 #ifndef READ_MODEL_URDF_H
 #define READ_MODEL_URDF_H
 
-#include <dart/model/host_only_model.h>
+#include "model/host_only_model.h"
 
 namespace dart {
 

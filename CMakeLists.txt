@@ -20,6 +20,8 @@ find_package(GLUT REQUIRED)
 find_package(GLEW REQUIRED)
 find_package(DEPTHSENSE)
 find_package(OpenNI2)
+find_package(Boost REQUIRED filesystem)
+find_package(urdfdom REQUIRED)
 
 # find packages with pkg-config
 find_package(PkgConfig)
@@ -35,8 +37,16 @@ include_directories(
     ${GLUT_INCLUDE_DIR}
     ${GLEW_INCLUDE_DIRS}
     ${tinyxml_INCLUDE_DIR}
+    ${Boost_INCLUDE_DIRS}
+    ${urdfdom_INCLUDE_DIRS}
 )
-link_directories(${tinyxml_LIBRARY_DIRS})
+
+link_directories(
+    ${tinyxml_LIBRARY_DIRS}
+    ${Boost_LIBRARY_DIRS}
+    ${urdfdom_LIBRARY_DIRS}
+)
+
 link_libraries(
     ${PNG_LIBRARIES}
     ${OPENGL_LIBRARIES}
@@ -44,6 +54,8 @@ link_libraries(
     ${GLEW_LIBRARIES}
     ${tinyxml_LIBRARIES}
     ${matheval_LIBRARIES}
+    ${Boost_LIBRARIES}
+    ${urdfdom_LIBRARIES}
 )
 
 # set dart source
@@ -84,6 +96,8 @@ set(dart_src
     ${PROJECT_SOURCE_DIR}/src/model/mirrored_model.cpp
     ${PROJECT_SOURCE_DIR}/src/model/model.h
     ${PROJECT_SOURCE_DIR}/src/model/model.cpp
+    ${PROJECT_SOURCE_DIR}/src/model/read_model_urdf.h
+    ${PROJECT_SOURCE_DIR}/src/model/read_model_urdf.cpp
 
     ${PROJECT_SOURCE_DIR}/src/optimization/kernels/obsToMod.h
     ${PROJECT_SOURCE_DIR}/src/optimization/kernels/modToObs.h
