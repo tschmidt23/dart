@@ -108,6 +108,21 @@ bool extract_frames(const int parent_id, LinkConstPtr &link, ModelInterfaceConst
         uint8_t r, g, b;        // colour
         std::string mesh_path = "";
 
+        // translation
+        urdf::Vector3 pos = link->visual->origin.position;
+        tx = std::to_string(pos.x);
+        ty = std::to_string(pos.y);
+        tz = std::to_string(pos.z);
+
+        // rotation
+        urdf::Rotation rot = link->visual->origin.rotation;
+        double roll, pitch, yaw;
+        rot.getRPY(roll, pitch, yaw);
+        // right-hand coordinate system
+        rx = std::to_string(roll);    // roll: rotation around x-axis (facing forward)
+        ry = std::to_string(pitch);   // pitch: rotation around y-axis (facing right)
+        rz = std::to_string(yaw);     // yaw: rotation around z-axis (facing down)
+
         switch(geometry->type) {
         case urdf::Geometry::SPHERE: {
             geom_type = PrimitiveSphereType;
@@ -129,9 +144,13 @@ bool extract_frames(const int parent_id, LinkConstPtr &link, ModelInterfaceConst
             geom_type = PrimitiveCylinderType;
             double radius = dynamic_cast<urdf::Cylinder*>(&*geometry)->radius;
             double length = dynamic_cast<urdf::Cylinder*>(&*geometry)->length;
-            sx = std::to_string(length);
+            sx = std::to_string(radius);
             sy = std::to_string(radius);
-            sz = std::to_string(radius);
+            sz = std::to_string(length);
+
+            // workaround: transform cylinder origin from URDF specification
+            // (origin at centre of cylinder volume) to DART (centre of bottom)
+            tz = std::to_string(pos.z - (length/2));
         }
             break;
         case urdf::Geometry::MESH: {
@@ -162,21 +181,6 @@ bool extract_frames(const int parent_id, LinkConstPtr &link, ModelInterfaceConst
         default:
             std::cerr<<"unknown geometry"<<std::endl;
         }
-
-        // translation
-        urdf::Vector3 pos = link->visual->origin.position;
-        tx = std::to_string(pos.x);
-        ty = std::to_string(pos.y);
-        tz = std::to_string(pos.z);
-
-        // rotation
-        urdf::Rotation rot = link->visual->origin.rotation;
-        double roll, pitch, yaw;
-        rot.getRPY(roll, pitch, yaw);
-        // right-hand coordinate system
-        rx = std::to_string(roll);    // roll: rotation around x-axis (facing forward)
-        ry = std::to_string(pitch);   // pitch: rotation around y-axis (facing right)
-        rz = std::to_string(yaw);     // yaw: rotation around z-axis (facing down)
 
         // colour
         if(link->visual->material!=NULL) {
