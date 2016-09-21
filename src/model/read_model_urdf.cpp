@@ -45,7 +45,7 @@ struct MeshLoaderConfig {
     /**
      * @brief colour RGB colour definition for untextured meshes
      */
-    std::vector<uint8_t> colour = {127, 127, 127};
+    std::vector<uint8_t> colour;
 };
 
 /**
@@ -303,7 +303,8 @@ bool extract_frames(const int parent_id, LinkConstPtr &link, ModelInterfaceConst
  */
 bool readModelURDF(const std::string &path, HostOnlyModel &model,
                    const std::string &root_link_name,
-                   const std::string &mesh_extension_surrogate)
+                   const std::string &mesh_extension_surrogate,
+                   const std::vector<uint8_t> &colour)
 {
     // parse URDF file
     ModelInterfaceConstPtr urdf_model = urdf::parseURDFFile(path);
@@ -323,6 +324,8 @@ bool readModelURDF(const std::string &path, HostOnlyModel &model,
         std::cout<<"root link: "<<l_root->name<<std::endl;
 
         MeshLoaderConfig conf;
+
+        conf.colour = colour;
 
         // get full absolute path
         boost::filesystem::path fpath = boost::filesystem::canonical(path);
@@ -355,10 +358,10 @@ bool readModelURDF(const std::string &path, HostOnlyModel &model,
     }
 }
 
-const HostOnlyModel &readModelURDF(const std::string &path, const std::string &root_link_name, const std::string &mesh_extension_surrogate)
+const HostOnlyModel &readModelURDF(const std::string &path, const std::string &root_link_name, const std::string &mesh_extension_surrogate, const std::vector<uint8_t> &colour)
 {
     HostOnlyModel *model = new HostOnlyModel();
-    readModelURDF(path, *model, root_link_name, mesh_extension_surrogate);
+    readModelURDF(path, *model, root_link_name, mesh_extension_surrogate, colour);
     return *model;
 }
 
