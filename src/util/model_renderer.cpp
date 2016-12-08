@@ -23,24 +23,19 @@ ModelRenderer::ModelRenderer(MeshReader * meshReader) {
     primitiveMeshes[PrimitiveCylinderType] = generateCylinderMesh(cylinderSlices);
     primitiveMeshes[PrimitiveCubeType] = generateCubeMesh();
 
-    // generate the buffers
-    glGenBuffersARB(NumPrimitives,_primitiveVBOs);
-    glGenBuffersARB(NumPrimitives,_primitiveNBOs);
-    glGenBuffersARB(NumPrimitives,_primitiveIBOs);
-
     // copy data to buffers
     for (int i=0; i<NumPrimitives; ++i) {
 
         Mesh * primitive = primitiveMeshes[i];
 
-        glBindBufferARB(GL_ARRAY_BUFFER_ARB,_primitiveVBOs[i]);
-        glBufferDataARB(GL_ARRAY_BUFFER_ARB,primitive->nVertices*sizeof(float3),primitive->vertices,GL_STATIC_DRAW_ARB);
+        _primitiveVBOs[i].Reinitialise(pangolin::GlArrayBuffer,primitive->nVertices,GL_FLOAT,3,GL_STATIC_DRAW);
+        _primitiveVBOs[i].Download(primitive->vertices,primitive->nVertices*sizeof(float3));
 
-        glBindBufferARB(GL_ARRAY_BUFFER_ARB,_primitiveNBOs[i]);
-        glBufferDataARB(GL_ARRAY_BUFFER_ARB,primitive->nVertices*sizeof(float3),primitive->normals,GL_STATIC_DRAW_ARB);
+        _primitiveNBOs[i].Reinitialise(pangolin::GlArrayBuffer,primitive->nVertices,GL_FLOAT,3,GL_STATIC_DRAW);
+        _primitiveNBOs[i].Download(primitive->vertices,primitive->nVertices*sizeof(float3));
 
-        glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER_ARB,_primitiveIBOs[i]);
-        glBufferDataARB(GL_ELEMENT_ARRAY_BUFFER_ARB,primitive->nFaces*sizeof(int3),primitive->faces,GL_STATIC_DRAW_ARB);
+        _primitiveIBOs[i].Reinitialise(pangolin::GlElementArrayBuffer,primitive->nFaces*3,GL_UNSIGNED_INT,3,GL_STATIC_DRAW);
+        _primitiveIBOs[i].Download(primitive->faces,primitive->nFaces*sizeof(int3));
 
         _nPrimitiveFaces[i] = primitive->nFaces;
 
@@ -54,17 +49,6 @@ ModelRenderer::ModelRenderer(MeshReader * meshReader) {
 }
 
 ModelRenderer::~ModelRenderer() {
-
-    // free buffers
-    glDeleteBuffersARB(NumPrimitives,_primitiveVBOs);
-    glDeleteBuffersARB(NumPrimitives,_primitiveNBOs);
-    glDeleteBuffersARB(NumPrimitives,_primitiveIBOs);
-
-    if (_meshNumbers.size() > 0) {
-        glDeleteBuffersARB(_meshNumbers.size(),_meshVBOs.data());
-        glDeleteBuffersARB(_meshNumbers.size(),_meshNBOs.data());
-        glDeleteBuffersARB(_meshNumbers.size(),_meshIBOs.data());
-    }
 
     // free meshes
     for (int i=0; i<_meshes.size(); ++i) {
@@ -96,22 +80,14 @@ int ModelRenderer::getMeshNumber(const std::string meshFilename) {
     int meshNum = _meshNumbers.size();
     _meshNumbers[meshFilename] = meshNum;
 
-    _meshVBOs.resize(meshNum + 1);
-    _meshNBOs.resize(meshNum + 1);
-    _meshIBOs.resize(meshNum + 1);
+    _meshVBOs.emplace_back(pangolin::GlArrayBuffer, mesh->nVertices, GL_FLOAT, 3, GL_STATIC_DRAW);
+    _meshVBOs.back().Download(mesh->vertices,mesh->nVertices*sizeof(float3));
 
-    glGenBuffersARB(1,&_meshVBOs[meshNum]);
-    glGenBuffersARB(1,&_meshNBOs[meshNum]);
-    glGenBuffersARB(1,&_meshIBOs[meshNum]);
+    _meshNBOs.emplace_back(pangolin::GlArrayBuffer, mesh->nVertices, GL_FLOAT, 3, GL_STATIC_DRAW);
+    _meshNBOs.back().Download(mesh->normals,mesh->nVertices*sizeof(float3));
 
-    glBindBufferARB(GL_ARRAY_BUFFER_ARB,_meshVBOs[meshNum]);
-    glBufferDataARB(GL_ARRAY_BUFFER_ARB,mesh->nVertices*sizeof(float3),mesh->vertices,GL_STATIC_DRAW_ARB);
-
-    glBindBufferARB(GL_ARRAY_BUFFER_ARB,_meshNBOs[meshNum]);
-    glBufferDataARB(GL_ARRAY_BUFFER_ARB,mesh->nVertices*sizeof(float3),mesh->normals,GL_STATIC_DRAW_ARB);
-
-    glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER_ARB,_meshIBOs[meshNum]);
-    glBufferDataARB(GL_ELEMENT_ARRAY_BUFFER_ARB,mesh->nFaces*sizeof(int3),mesh->faces,GL_STATIC_DRAW_ARB);
+    _meshIBOs.emplace_back(pangolin::GlElementArrayBuffer, mesh->nFaces*3, GL_UNSIGNED_INT, 3, GL_STATIC_DRAW);
+    _meshIBOs.back().Download(mesh->faces,mesh->nFaces*sizeof(int3));
 
     _nMeshFaces.push_back(mesh->nFaces);
 
@@ -123,36 +99,35 @@ int ModelRenderer::getMeshNumber(const std::string meshFilename) {
 
 void ModelRenderer::renderPrimitive(const GeomType type) const {
 
-    glBindBufferARB(GL_ARRAY_BUFFER_ARB, _primitiveNBOs[type]);
-    glNormalPointer(GL_FLOAT,0,0);
-
-    glBindBufferARB(GL_ARRAY_BUFFER_ARB, _primitiveVBOs[type]);
+    _primitiveVBOs[type].Bind();
+    glEnableClientState(GL_VERTEX_ARRAY);
     glVertexPointer(3, GL_FLOAT, 0, 0);
 
-    glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER_ARB, _primitiveIBOs[type]);
-
+    _primitiveNBOs[type].Bind();
     glEnableClientState(GL_NORMAL_ARRAY);
-    glEnableClientState(GL_VERTEX_ARRAY);
+    glNormalPointer(GL_FLOAT,0,0);
 
+    _primitiveIBOs[type].Bind();
     glDrawElements(GL_TRIANGLES,3*_nPrimitiveFaces[type],GL_UNSIGNED_INT,0);
+
+    _primitiveNBOs[type].Unbind();
+    _primitiveVBOs[type].Unbind();
+    _primitiveIBOs[type].Unbind();
 
     glDisableClientState(GL_VERTEX_ARRAY);
     glDisableClientState(GL_NORMAL_ARRAY);
-
-    glBindBufferARB(GL_ARRAY_BUFFER_ARB,0);
-    glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER_ARB,0);
 
 }
 
 void ModelRenderer::renderMesh(const uint meshNum) const {
 
-    glBindBufferARB(GL_ARRAY_BUFFER_ARB, _meshNBOs[meshNum]);
+    _meshNBOs[meshNum].Bind();
     glNormalPointer(GL_FLOAT,0,0);
 
-    glBindBufferARB(GL_ARRAY_BUFFER_ARB, _meshVBOs[meshNum]);
+    _meshVBOs[meshNum].Bind();
     glVertexPointer(3, GL_FLOAT, 0, 0);
 
-    glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER_ARB, _meshIBOs[meshNum]);
+    _meshIBOs[meshNum].Bind();
 
     glEnableClientState(GL_NORMAL_ARRAY);
     glEnableClientState(GL_VERTEX_ARRAY);
@@ -162,8 +137,9 @@ void ModelRenderer::renderMesh(const uint meshNum) const {
     glDisableClientState(GL_VERTEX_ARRAY);
     glDisableClientState(GL_NORMAL_ARRAY);
 
-    glBindBufferARB(GL_ARRAY_BUFFER_ARB,0);
-    glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER_ARB,0);
+    _meshNBOs[meshNum].Unbind();
+    _meshVBOs[meshNum].Unbind();
+    _meshIBOs[meshNum].Unbind();
 
 }
 

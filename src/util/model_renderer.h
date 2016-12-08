@@ -7,6 +7,8 @@
 #include <sys/types.h>
 #include <GL/glew.h>
 
+#include <pangolin/gl/gl.h>
+
 #include "mesh/mesh.h"
 #include "dart_types.h"
 //#include "models.h"
@@ -45,16 +47,16 @@ public:
 private:
 
     // primitive data
-    GLuint _primitiveVBOs[NumPrimitives];
-    GLuint _primitiveNBOs[NumPrimitives];
-    GLuint _primitiveIBOs[NumPrimitives];
+    pangolin::GlBuffer _primitiveVBOs[NumPrimitives];
+    pangolin::GlBuffer _primitiveNBOs[NumPrimitives];
+    pangolin::GlBuffer _primitiveIBOs[NumPrimitives];
     int _nPrimitiveFaces[NumPrimitives];
 
     // mesh data
     std::map<std::string,uint> _meshNumbers;
-    std::vector<GLuint> _meshVBOs;
-    std::vector<GLuint> _meshNBOs;
-    std::vector<GLuint> _meshIBOs;
+    std::vector<pangolin::GlBuffer> _meshVBOs;
+    std::vector<pangolin::GlBuffer> _meshNBOs;
+    std::vector<pangolin::GlBuffer> _meshIBOs;
     std::vector<int> _nMeshFaces;
     std::vector<Mesh *> _meshes;
 
