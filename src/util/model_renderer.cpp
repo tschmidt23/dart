@@ -29,13 +29,13 @@ ModelRenderer::ModelRenderer(MeshReader * meshReader) {
         Mesh * primitive = primitiveMeshes[i];
 
         _primitiveVBOs[i].Reinitialise(pangolin::GlArrayBuffer,primitive->nVertices,GL_FLOAT,3,GL_STATIC_DRAW);
-        _primitiveVBOs[i].Download(primitive->vertices,primitive->nVertices*sizeof(float3));
+        _primitiveVBOs[i].Upload(primitive->vertices,primitive->nVertices*sizeof(float3));
 
         _primitiveNBOs[i].Reinitialise(pangolin::GlArrayBuffer,primitive->nVertices,GL_FLOAT,3,GL_STATIC_DRAW);
-        _primitiveNBOs[i].Download(primitive->vertices,primitive->nVertices*sizeof(float3));
+        _primitiveNBOs[i].Upload(primitive->vertices,primitive->nVertices*sizeof(float3));
 
         _primitiveIBOs[i].Reinitialise(pangolin::GlElementArrayBuffer,primitive->nFaces*3,GL_UNSIGNED_INT,3,GL_STATIC_DRAW);
-        _primitiveIBOs[i].Download(primitive->faces,primitive->nFaces*sizeof(int3));
+        _primitiveIBOs[i].Upload(primitive->faces,primitive->nFaces*sizeof(int3));
 
         _nPrimitiveFaces[i] = primitive->nFaces;
 
@@ -81,13 +81,13 @@ int ModelRenderer::getMeshNumber(const std::string meshFilename) {
     _meshNumbers[meshFilename] = meshNum;
 
     _meshVBOs.emplace_back(pangolin::GlArrayBuffer, mesh->nVertices, GL_FLOAT, 3, GL_STATIC_DRAW);
-    _meshVBOs.back().Download(mesh->vertices,mesh->nVertices*sizeof(float3));
+    _meshVBOs.back().Upload(mesh->vertices,mesh->nVertices*sizeof(float3));
 
     _meshNBOs.emplace_back(pangolin::GlArrayBuffer, mesh->nVertices, GL_FLOAT, 3, GL_STATIC_DRAW);
-    _meshNBOs.back().Download(mesh->normals,mesh->nVertices*sizeof(float3));
+    _meshNBOs.back().Upload(mesh->normals,mesh->nVertices*sizeof(float3));
 
     _meshIBOs.emplace_back(pangolin::GlElementArrayBuffer, mesh->nFaces*3, GL_UNSIGNED_INT, 3, GL_STATIC_DRAW);
-    _meshIBOs.back().Download(mesh->faces,mesh->nFaces*sizeof(int3));
+    _meshIBOs.back().Upload(mesh->faces,mesh->nFaces*sizeof(int3));
 
     _nMeshFaces.push_back(mesh->nFaces);
 

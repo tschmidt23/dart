@@ -39,7 +39,7 @@ public:
         memcpy(normals,copy.normals,copy.nVertices*sizeof(float3));
     }
 
-    ~Mesh() { delete faces; delete vertices; delete normals; }
+    ~Mesh() { delete [] faces; delete [] vertices; delete [] normals; }
 
     void writeToObjFile(const char * filename);
 
