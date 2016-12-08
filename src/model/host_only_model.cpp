@@ -759,6 +759,9 @@ void HostOnlyModel::voxelizeFrame(Grid3D<float> &sdf, const int frame, const flo
             break;
         case PrimitiveCubeType:
             if (p[6] == 0 && p[7] == 0 && p[8] == 0) {
+                off_x -= p[3];
+                off_y -= p[4];
+                off_z -= p[5];
                 for (int z = 0; z < dim.z; z++) {
                     float vox_z = z*resolution + off_z; // voxel z position (in geometric units)
                     if (vox_z > 0.5*p[2] || vox_z < -0.5*p[2])

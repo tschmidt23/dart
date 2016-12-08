@@ -8,6 +8,9 @@
 namespace dart {
 
 void writeModelXML(const HostOnlyModel & model, const char * filename);
+bool readModelXML(const std::string filename, HostOnlyModel & model);
+
+__attribute__((deprecated))
 bool readModelXML(const char * filename, HostOnlyModel & model);
 
 // TODO: maybe make this look nicer?

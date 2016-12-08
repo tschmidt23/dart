@@ -105,9 +105,13 @@ void readFrameXML(const int parent, HostOnlyModel & model, TiXmlElement * elemen
 }
 
 bool readModelXML(const char * filename, HostOnlyModel & model) {
+    return readModelXML(std::string(filename),model);
+}
+
+bool readModelXML(const std::string filename, HostOnlyModel & model) {
 
     struct stat buffer;
-    if (stat (filename, &buffer) != 0) {
+    if (stat (filename.c_str(), &buffer) != 0) {
         std::cerr << "file " << filename << " does not exist" << std::endl;
         return false;
     }
