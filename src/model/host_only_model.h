@@ -111,6 +111,14 @@ public:
 
     inline const SE3 getTransformJointAxisToParent(const int joint) const { return _T_pf[joint]; }
 
+    const std::string meshFilename(const int meshNum) const {
+        auto it = _meshFilenames.find(meshNum);
+        if (it != _meshFilenames.end()) {
+            return it->second;
+        }
+        return "";
+    }
+
 protected:
     int _nFrames;
 
