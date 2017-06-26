@@ -3,7 +3,7 @@
 #include <iostream>
 #include <stdio.h>
 #include <vector_functions.h>
-#include <helper_math.h>
+#include <util/helper_math.h>
 
 namespace dart {
 
