@@ -29,7 +29,7 @@ void sampleMesh(std::vector<float3> & sampledPoints, const Mesh & mesh, const fl
 
         double surfaceArea = sqrt(s*(s-a)*(s-b)*(s-c));
 
-        if (isnan(surfaceArea)) {
+        if (std::isnan(surfaceArea)) {
             surfaceArea = 0;
         }
 
