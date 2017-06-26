@@ -1,6 +1,6 @@
 #include "gradient_viz.h"
 
-#include <helper_math.h>
+#include <util/helper_math.h>
 
 namespace dart {
 

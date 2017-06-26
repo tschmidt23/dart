@@ -223,9 +223,17 @@ set(CUDA_NVCC_FLAGS "-std=c++11" "--use_fast_math"  "-O3" "--ptxas-options=--ver
 
 # add library
 if(CUDA_FOUND)
-    include_directories(${CUDA_TOOLKIT_ROOT_DIR}/samples/common/inc)
+    #include_directories(${CUDA_TOOLKIT_ROOT_DIR}/samples/common)
+
+    add_custom_target(linkTarget COMMAND ln -sf ${CUDA_TOOLKIT_ROOT_DIR}/samples/common/inc/helper_math.h ${PROJECT_SOURCE_DIR}/src/util/helper_math.h)
+
     add_definitions(-DCUDA_BUILD)
     cuda_add_library(${PROJECT_NAME} ${dart_src} ${point_cloud_srcs} ${depth_source_src} ${gpu_specific_src})
+    add_dependencies(${PROJECT_NAME} linkTarget)
+
+    message(STATUS "ln -s ${CUDA_TOOLKIT_ROOT_DIR}/samples/common/inc/helper_math.h ${PROJECT_SOURCE_DIR}/src/util/helper_math.h")
+
+
 else()
     add_library(${PROJECT_NAME} ${dart_src} ${point_cloud_srcs} ${depth_source_src} ${cpu_specific_src})
 endif()
@@ -267,4 +275,5 @@ if(${BUILD_TESTS} AND ${GTEST_FOUND})
                 ${gpu_test_sources}
     )
     target_link_libraries(test dart)
+
 endif()
