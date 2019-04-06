@@ -45,7 +45,7 @@ make
 Example usage
 ------------
 
-An example demonstrating the use of DART to track robot hands manipulating objects, including the depth and color video, can be downloaded from [here](http://homes.cs.washington.edu/~tws10/dartExample.tar.gz).
+An example demonstrating the use of DART to track robot hands manipulating objects, including the depth and color video, can be downloaded from [here](https://drive.google.com/file/d/1HXvOsUcgS6THn17hME-SKQU3FQVUJr_z/view?usp=sharing).
 
 Notes on using the library
 ------------
