@@ -21,6 +21,7 @@ Model::Model(const Model & copy) {
     _T_cm = copy._T_cm;
     _jointLimits = copy._jointLimits;
     _jointNames = copy._jointNames;
+    _name = copy._name;
 
 }
 
@@ -203,6 +204,14 @@ void Model::renderVoxelizedFrame(const int frameNumber, const char* args) const 
         glColor4ub(color.x,color.y,color.z,72);
         renderSdf(sdf,levelSet);
     }
+}
+
+int Model::getJointIdByName(const std::string &name) {
+    const auto pos = std::find(_jointNames.begin(), _jointNames.end(), name);
+    if(pos != _jointNames.end())
+        return std::distance(_jointNames.begin(), pos);
+    else
+        throw std::range_error("requested frame '"+name+"' does not exist");
 }
 
 void Model::renderSdf(const dart::Grid3D<float> & sdf, float levelSet) const {

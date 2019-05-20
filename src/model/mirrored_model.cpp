@@ -184,23 +184,18 @@ void MirroredModel::setPose(const Pose & pose) {
     _T_cm = pose.getTransformModelToCamera();
     _T_mc = pose.getTransformCameraToModel();
 
-    int j = 0;
     for (int f=1; f<getNumFrames(); ++f) {
-
-        float p = std::min(std::max(getJointMin(j),pose.getArticulation()[j]),getJointMax(j));
-
         const int joint = f-1;
+        float p = std::min(std::max(getJointMin(joint),pose.getArticulation()[joint]),getJointMax(joint));
         SE3 T_pf = getTransformJointAxisToParent(joint);
         switch(_jointTypes->hostPtr()[joint]) {
             case RotationalJoint:
                 T_pf = T_pf*SE3Fromse3(se3(0, 0, 0,
                                            p*_jointAxes->hostPtr()[joint].x, p*_jointAxes->hostPtr()[joint].y, p*_jointAxes->hostPtr()[joint].z));
-                ++j;
                 break;
             case PrismaticJoint:
                 T_pf = T_pf*SE3Fromse3(se3(p*_jointAxes->hostPtr()[joint].x, p*_jointAxes->hostPtr()[joint].y, p*_jointAxes->hostPtr()[joint].z,
                                            0, 0, 0));
-                ++j;
                 break;
         }
         const int parent = getFrameParent(f);

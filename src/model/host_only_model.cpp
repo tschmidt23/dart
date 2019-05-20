@@ -470,23 +470,19 @@ void HostOnlyModel::setPose(const Pose & pose) {
     _T_mc = pose.getTransformCameraToModel();
 
     // compute transforms from frame to model
-    int j = 0;
     for (int f=1; f<getNumFrames(); ++f) {
-
-        const float p = std::min(std::max(getJointMin(j),pose.getArticulation()[j]),getJointMax(j));
-
         const int joint = f-1;
+        const float p = std::min(std::max(getJointMin(joint),pose.getArticulation()[joint]),getJointMax(joint));
+
         SE3 T_pf = getTransformJointAxisToParent(joint);
         switch(_jointTypes[joint]) {
         case RotationalJoint:
             T_pf = T_pf*SE3Fromse3(se3(0, 0, 0,
                                                    p*_axes[joint].x, p*_axes[joint].y, p*_axes[joint].z));
-            ++j;
             break;
         case PrismaticJoint:
             T_pf = T_pf*SE3Fromse3(se3(p*_axes[joint].x, p*_axes[joint].y, p*_axes[joint].z,
                                                    0, 0, 0));
-            ++j;
             break;
         }
         const int parent = getFrameParent(f);

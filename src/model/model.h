@@ -101,6 +101,7 @@ public:
     inline float getJointMax(const int joint) const { return _jointLimits[joint].y; }
 
     const std::string & getJointName(const int joint) const { return _jointNames[joint]; }
+    int getJointIdByName(const std::string &name);
     void renderSdf(const dart::Grid3D<float> & sdf, float levelSet) const;
 
     void getArticulatedBoundingBox(float3 & mins, float3 & maxs, const float modelSdfPadding, const int nSweepPoints = 4);
@@ -111,6 +112,10 @@ public:
     void setModelVersion(const int modelVersion) { _modelVersion = modelVersion; }
 
     virtual const SE3 getTransformJointAxisToParent(const int joint) const = 0;
+
+    const std::string getName() const { return _name; }
+
+    void setName(const std::string name) { _name = name; }
 
 protected:
     int _dimensionality;
@@ -140,6 +145,8 @@ protected:
 private:
 
     std::map<int,uint> _meshNumbers;
+
+    std::string _name;
 
     // geometry-level rendering
     void renderGeometries(void (Model::*prerenderFunc)(const int, const int, const char *) const,

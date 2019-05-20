@@ -45,6 +45,15 @@ Pose & Pose::operator=(const Pose & rhs) {
     return *this;
 }
 
+void Pose::setReducedArticulation(const std::map<std::string, float> &joint_map) {
+    // check all joints for available values from map
+    for(unsigned int i=0; i<_reduction->getReducedDimensions(); i++) {
+        // only access key (name) if it exists
+        if(joint_map.count(_reduction->getName(i))>0)
+            _reducedArticulation[i] = joint_map.at(_reduction->getName(i));
+    }
+}
+
 LinearPoseReduction::LinearPoseReduction(const int fullDims, const int redDims)
     : PoseReduction(fullDims,redDims), _A(fullDims*redDims), _b(new float[fullDims]) {
 
