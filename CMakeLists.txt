@@ -87,6 +87,7 @@ set(dart_src
 
     ${PROJECT_SOURCE_DIR}/src/optimization/kernels/obsToMod.h
     ${PROJECT_SOURCE_DIR}/src/optimization/kernels/modToObs.h
+    ${PROJECT_SOURCE_DIR}/src/optimization/kernels/kinematics.h
     ${PROJECT_SOURCE_DIR}/src/optimization/kernels/intersection.h
     ${PROJECT_SOURCE_DIR}/src/optimization/kernels/raycast.h
     ${PROJECT_SOURCE_DIR}/src/optimization/contact_prior.cpp
@@ -152,6 +153,7 @@ set(gpu_specific_src
     ${PROJECT_SOURCE_DIR}/src/optimization/kernels/kernel_common.h
     ${PROJECT_SOURCE_DIR}/src/optimization/kernels/obsToMod.cu
     ${PROJECT_SOURCE_DIR}/src/optimization/kernels/modToObs.cu
+    ${PROJECT_SOURCE_DIR}/src/optimization/kernels/kinematics.cu
     ${PROJECT_SOURCE_DIR}/src/optimization/kernels/intersection.cu
     ${PROJECT_SOURCE_DIR}/src/optimization/kernels/raycast.cu
 

@@ -99,6 +99,7 @@ public:
 
     inline float getJointMin(const int joint) const { return _jointLimits[joint].x; }
     inline float getJointMax(const int joint) const { return _jointLimits[joint].y; }
+    inline const std::vector<float2> &getJointLimits() const { return _jointLimits; }
 
     const std::string & getJointName(const int joint) const { return _jointNames[joint]; }
     void renderSdf(const dart::Grid3D<float> & sdf, float levelSet) const;
